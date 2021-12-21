@@ -6,11 +6,11 @@ import (
 )
 
 func TestInit(t *testing.T) {
-	ll := Init()
+	ll := InitLinkList()
 	fmt.Println(ll)
 }
 func TestAdd(t *testing.T) {
-	ll := Init()
+	ll := InitLinkList()
 	fmt.Println(ll.ToSlice())
 	ll.AddNode(1)
 	ll.AddNode(2)
@@ -21,7 +21,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestDel(t *testing.T) {
-	ll := Init()
+	ll := InitLinkList()
 	ll.AddNode(1)
 	ll.AddNode(2)
 	ll.AddNode(3)
@@ -32,7 +32,7 @@ func TestDel(t *testing.T) {
 }
 
 func TestFind(t *testing.T) {
-	ll := Init()
+	ll := InitLinkList()
 	ll.AddNode(1)
 	ll.AddNode(2)
 	ll.AddNode(3)

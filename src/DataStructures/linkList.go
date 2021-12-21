@@ -12,7 +12,7 @@ type linkList struct {
 }
 
 //初始化
-func Init() linkList {
+func InitLinkList() linkList {
 	return linkList{size: 0, head: &linkNode{}}
 }
 
