@@ -16,470 +16,66 @@
   * [ok]分块查找(类似于指数搜索，用2^i来进行分块)
 * [ok]顺序查找
 * 二叉排序树(BST)
-* 平衡二叉树(AVL)
+* 平衡二叉树(AVL)（[详情](#1)）
 * *2-3查找树*
-  * *红黑树*
-  ```
-  2-3树：
-  https://www.cnblogs.com/liudemeng/p/11387369.html
-
-  红黑树：
-  https://www.bilibili.com/video/BV1Tb4y197Fe?from=search&seid=15067212647568877441&spm_id_from=333.337.0.0
-  面试官问红黑树怎么旋转调整的，一般能问到这么细的就看真本事了，要我我选择放弃，但是问我红黑树是什么，有什么意义还是可以回答的：排序二叉树有不平衡的问题，可能左子树很长但是右子树很短，造成查询时性能不佳（logn退化成n），完全平衡的二叉树能保证层数平均，从而查询效率高，但是维护又很麻烦，每次插入和删除有很大的可能要大幅调整树结构。红黑树就是介于完全不平衡和完全平衡之间的一种二叉树，通过每个节点有红黑两种颜色、从节点到任意叶子节点会经过相同数量的黑色节点等一系列规则，实现了【树的层数最大也只会有两倍的差距】，这样既能提高插入和删除的效率，又能让树相对平衡从而有还不错的查询效率。从整体上讲，红黑树就是一种中庸之道的二叉树
-  ```
+  * *红黑树(RBT)（[详情](#2)）* 
   * *B树和B+树*
 ### 排序算法
   * **快速排序**
 ### 动态规划
 ### 贪心算法
 
-以下是在某github项目中找到的有关各个数据结构对应的算法题。
-## Array
+## 常见的算法题
 
-【11】盛最多水的容器：https://leetcode-cn.com/problems/container-with-most-water/
+[在某github项目中找到的有关各个数据结构对应的算法题。](/leetcode.md)
 
-【283】零移动：https://leetcode-cn.com/problems/move-zeroes/
 
-【27】移除元素：https://leetcode-cn.com/problems/remove-element/
+## 附录
+### AVL实现细节
+<div id="1">
+AVL实现的基础是排序二叉树，AVL规定了任意节点的左右子树高度差的绝对值不能超过1，它还定义了节点左右子树的高度差为该节点的**平衡因子**，其值直可能为-1、0或1。所以每当在二叉排序树中插入（或删除）一个节点时，都要先见检查插入路径上的节点是否因为此次插入而导致了不平衡。若导致了不平衡，则先找到插入路径上离插入节点最近的平衡因子大于1的节点A，再对以节点A为根的子树，在保证二叉排序数的特性下，调节各节点的位置关系，使之重新达到平衡。
 
-【26】删除排序数组中的重复项：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/
+具体插入中，会遇到四种不平衡情况，因为在节点A的左孩子（L）的左子树（L）下插入新节点，导致了不平衡，简称：LL不平衡。其他三种不平衡情况分别为：RR不平衡、LR不平衡、RL不平衡。这四种情况的处理办法如下表：
 
-【80】删除排序数组中的重复项II：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array-ii/
+|  不平衡情况   | 处理办法  |
+|  :----:  | :----:  |
+| LL不平衡  | 单右旋 |
+| RR不平衡  | 单左旋 |
+| LR不平衡  | 先左旋再右旋 |
+| RL不平衡  | 先右旋再左旋 |
 
-【75】颜色分类：https://leetcode-cn.com/problems/sort-colors/
+1. 具体处理LL不平衡示意图
+图中A节点的左孩子的左子树插入节点导致不平衡：
+![具体处理LL不平衡示意图](/resources/LL_detail.png)
 
-【88】合并两个有序数组：https://leetcode-cn.com/problems/merge-sorted-array/
+2. 具体处理LR不平衡示意图
+途中A节点的左孩子的右子树插入节点，导致不平衡：
+![具体处理LR不平衡示意图](resources/LR_detail.png)
 
-【215】数组中第K个最大元素：https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+剩下两种情况处理方法类似。
 
-爬楼梯：https://leetcode.com/problems/climbing-stairs/
+### RBT实现细节
+<div id="2">
 
-三数之和：https://leetcode-cn.com/problems/3sum/
+[红黑树视频讲解](https://www.bilibili.com/video/BV1Tb4y197Fe?from=search&seid=15067212647568877441&spm_id_from=333.337.0.0)
 
-两数之和：https://leetcode-cn.com/problems/two-sum/
+RBT对平衡要求低，调整频率没有AVL高，平衡性米有AVL好；如果插入删除不怎么频繁，则AVL好点；如果相反，则BST好点。
+#### **RBT特性：**
 
-【167】两数之和II：https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/
+* **RBT根节点必须是黑色**
+* **每个节点都有颜色，要么红色，要么黑色**
+* **红黑树把空指针看作黑色节点，所以叶子节点是空节点**
+* **红属性：红色节点的孩子必须为黑色节点（对黑色没有这样的要求）**
+* **黑属性：任何一个节点到它的所有叶子节点的简单路径上包含的黑色节点数相同**
+* RBT的最大高度为：$2\cdot\log(n+1)$,n为节点数(这里是以2为低的对数，不把空指针算入节点)
+* 黑色高度：从x节点到叶子节点的路径中包含的黑色节点个数（不含叶子）
 
-【125】验证回文串：https://leetcode-cn.com/problems/valid-palindrome/
+#### 插入红黑树的方式：
+如果是空树，将插入的节点作为根节点并涂上黑色,如果不是空树，则插入节点总是先涂上红色并称为新节点，然后检查以下几点：
+  1. 如果新节点的父节点是黑色，则插入操作结束。
+  2. 如果新节点的父节点是红色，且它的兄弟节点也是红色，则将它们全部涂黑，再向上检父节点，交换它的颜色，一直往上，直到根节点结束。
+  3. 如果新节点的父节点是红色，同时父节的兄弟节点是黑色或没有节点，则需要旋转，再着色。根据两个红色的位置关系判断出需要RL,LR,RR,LL的操作，最后交换颜色，使它成为红黑树。
 
-【344】反转字符串：https://leetcode-cn.com/problems/reverse-string/
-
-【345】反转字符串中的元音字母：https://leetcode-cn.com/problems/reverse-vowels-of-a-string/
-
-旋转数组：https://leetcode-cn.com/problems/rotate-array/
-
-选择餐馆：https://u.geekbang.org/playground/exam/823?question=7673
-
-每日在线用户量：https://u.geekbang.org/playground/exam/823?question=7676
-
-数据流量查询：https://u.geekbang.org/playground/exam/823?question=7675
-
-找雪花：https://u.geekbang.org/playground/exam/823?question=7677
-
-【209】最小子数组：https://leetcode-cn.com/problems/minimum-size-subarray-sum/
-
-【3】无重复字符的最长子串：https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
-
-【438】找到字符串中所有字母异位词：https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/
-
-【76】最小覆盖子串：https://leetcode-cn.com/problems/minimum-window-substring/
-
-
-
-## Linked List
-
-【92】链表反转：https://leetcode.com/problems/reverse-linked-list/
-
-两两交换链表中的节点：https://leetcode.com/problems/swap-nodes-in-pairs/
-
-环形链表：https://leetcode.com/problems/linked-list-cycle/
-
-环形链表ii：https://leetcode.com/problems/linked-list-cycle-ii/
-
-K个一组翻转链表：https://leetcode.com/problems/reverse-nodes-in-k-group/
-
-合并两个有序链表：https://leetcode-cn.com/problems/merge-two-sorted-lists/
-
-合并两个有序数组：https://leetcode-cn.com/problems/merge-sorted-array/
-
-加一：https://leetcode-cn.com/problems/plus-one/
-
-合并两个有序链表：https://u.geekbang.org/playground/exam/823?question=8285
-
-视野总和：https://u.geekbang.org/playground/exam/823?question=8286
-
-【83】 删除排序链表中重复元素：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/
-
-【86】分隔链表：https://leetcode-cn.com/problems/partition-list/
-
-【328】奇偶链表：https://leetcode-cn.com/problems/odd-even-linked-list/
-
-【2】两数相加：https://leetcode-cn.com/problems/add-two-numbers/
-
-【445】两数相加II:https://leetcode-cn.com/problems/add-two-numbers-ii/
-
-【203】移除链表元素：https://leetcode-cn.com/problems/remove-linked-list-elements/
-
-【82】删除排序链表中的重复元素II：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/
-
-【21】合并两个有序链表：https://leetcode-cn.com/problems/merge-two-sorted-lists/
-
-【24】两两交换链表中的节点：https://leetcode-cn.com/problems/swap-nodes-in-pairs/
-
-【25】K个一组翻转链表：https://leetcode-cn.com/problems/reverse-nodes-in-k-group/
-
-【147】对链表进行插入排序：https://leetcode-cn.com/problems/insertion-sort-list/
-
-【148】排序链表：https://leetcode-cn.com/problems/sort-list/
-
-【237】删除链表中的节点：https://leetcode-cn.com/problems/delete-node-in-a-linked-list/
-
-【19】删除链表的倒数第N个节点：https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
-
-【61】旋转链表：https://leetcode-cn.com/problems/rotate-list/
-
-【143】重排链表：https://leetcode-cn.com/problems/reorder-list/
-
-【234】最短单词距离：https://leetcode-cn.com/problems/shortest-word-distance/
-
-【206】反转链表：https://leetcode-cn.com/problems/reverse-linked-list/
-
-
-
-## Stack / Queue
-
-有效的括号：https://leetcode-cn.com/problems/valid-parentheses/
-
-最小栈：https://leetcode-cn.com/problems/min-stack/
-
-柱状图中最大的矩形：https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
-
-滑动窗口最大值：https://leetcode-cn.com/problems/sliding-window-maximum/
-
-设计循环双端队列：https://leetcode.com/problems/design-circular-deque/
-
-接雨水：https://leetcode.com/problems/trapping-rain-water/
-
-【150】逆波兰表达式求值：https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/
-
-【71】简化路径：https://leetcode-cn.com/problems/simplify-path/
-
-【144】二叉树前序遍历：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
-
-【94】二叉树的中序遍历：https://leetcode-cn.com/problems/binary-tree-inorder-traversal/
-
-【145】二叉树的后序遍历：https://leetcode-cn.com/problems/binary-tree-postorder-traversal/
-
-【341】扁平化嵌套列表迭代器：https://leetcode-cn.com/problems/flatten-nested-list-iterator/
-
-【102】二叉树的层序遍历：https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
-
-【107】二叉树的层序遍历II：https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/
-
-【103】二叉树的锯齿形层序遍历：https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/
-
-【199】二叉树的右视图：https://leetcode-cn.com/problems/binary-tree-right-side-view/
-
-【347】前K个高频元素：https://leetcode-cn.com/problems/top-k-frequent-elements/
-
-【23】合并K个升序链表：https://leetcode-cn.com/problems/merge-k-sorted-lists/
-
-
-
-## Hash / Set / Map
-
-有效的字母异位词：https://leetcode-cn.com/problems/valid-anagram/description/
-
-字母异位词分组：https://leetcode-cn.com/problems/group-anagrams/
-
-【1】两数之和：https://leetcode-cn.com/problems/two-sum/description/
-
-【349】两个数组的交集：https://leetcode-cn.com/problems/intersection-of-two-arrays/
-
-【350】两个数组交集II：https://leetcode-cn.com/problems/intersection-of-two-arrays-ii/
-
-【242】有效的字母异位词：https://leetcode-cn.com/problems/valid-anagram/
-
-【202】快乐数：https://leetcode-cn.com/problems/happy-number/
-
-【290】单词规律：https://leetcode-cn.com/problems/word-pattern/
-
-【205】同构字符串：https://leetcode-cn.com/problems/isomorphic-strings/
-
-【451】根据字符出现频率排序：https://leetcode-cn.com/problems/sort-characters-by-frequency/
-
-【15】三数之和：https://leetcode-cn.com/problems/3sum/
-
-【18】四数之和：https://leetcode-cn.com/problems/4sum/
-
-【16】最接近的三数之和：https://leetcode-cn.com/problems/3sum-closest/
-
-【454】两数相加II：https://leetcode-cn.com/problems/4sum-ii/
-
-【49】字母异位词分词：https://leetcode-cn.com/problems/group-anagrams/
-
-【219】存在重复元素II：https://leetcode-cn.com/problems/contains-duplicate-ii/
-
-【217】存在重复元素：https://leetcode-cn.com/problems/contains-duplicate/
-
-【220】存在重复元素III：https://leetcode-cn.com/problems/contains-duplicate-iii/
-
-
-
-## Binary Tree
-
-二叉树的中序遍历：https://leetcode-cn.com/problems/binary-tree-inorder-traversal/
-
-二叉树的前序遍历：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
-
-N叉树的后序遍历：https://leetcode-cn.com/problems/n-ary-tree-postorder-traversal/
-
-N叉树的前序遍历：https://leetcode-cn.com/problems/n-ary-tree-preorder-traversal/description/
-
-N叉树的层序遍历：https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
-
-二叉搜索树的后序遍历序列：https://u.geekbang.org/playground/exam/823?question=8126
-
-安装路灯：https://u.geekbang.org/playground/exam/823?question=7758
-
-【104】二叉树的最大深度：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/
-
-【111】二叉树的最小深度：https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/
-
-【100】相同的树：https://leetcode-cn.com/problems/same-tree/
-
-【101】对称二叉树：https://leetcode-cn.com/problems/symmetric-tree/
-
-【222】完全二叉树的节点个数：https://leetcode-cn.com/problems/count-complete-tree-nodes/
-
-【110】平衡二叉树：https://leetcode-cn.com/problems/balanced-binary-tree/
-
-【226】翻转二叉树：https://leetcode-cn.com/problems/invert-binary-tree/
-
-【112】路径总和：https://leetcode-cn.com/problems/path-sum/
-
-【404】左叶子之和：https://leetcode-cn.com/problems/sum-of-left-leaves/
-
-【257】二叉树的所有路径：https://leetcode-cn.com/problems/binary-tree-paths/
-
-【113】路径总和II：https://leetcode-cn.com/problems/path-sum-ii/
-
-【129】求根到叶子节点数字之和：https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/
-
-【437】路径总和III：https://leetcode-cn.com/problems/path-sum-iii/
-
-【235】二叉搜索树的最近公共祖先：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
-
-【98】验证二叉搜索树：https://leetcode-cn.com/problems/validate-binary-search-tree/
-
-【450】删除二叉搜索树中的节点：https://leetcode-cn.com/problems/delete-node-in-a-bst/
-
-【108】将有序数组转换为二叉搜索树：https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/
-
-【230】二叉搜索树中第K小元素：https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/
-
-【236】二叉树的最近公共祖先：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
-
-
-
-## Heap
-
-最小的K个数：https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/
-
-滑动窗口最大值：https://leetcode-cn.com/problems/sliding-window-maximum/
-
-堆排序：https://www.geeksforgeeks.org/heap-sort/
-
-丑数：https://leetcode-cn.com/problems/chou-shu-lcof/
-
-前K个高频元素：https://leetcode-cn.com/problems/top-k-frequent-elements/
-
-最火视频榜单：https://u.geekbang.org/playground/exam/823?question=7678
-
-
-
-## Recursion
-
-爬楼梯：https://leetcode-cn.com/problems/climbing-stairs/
-
-括号生成：https://leetcode-cn.com/problems/generate-parentheses/
-
-翻转二叉树：https://leetcode-cn.com/problems/invert-binary-tree/description/
-
-验证二叉搜索树：https://leetcode-cn.com/problems/validate-binary-search-tree/
-
-二叉树的最大深度：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/
-
-二叉树的最小深度：https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/
-
-二叉树的序列化与反序列化：https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/
-
-计算二叉树的公共祖先：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
-
-从前序与中序遍历序列构造二叉树：https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
-
-组合：https://leetcode-cn.com/problems/combinations/
-
-【39】组合总和：https://leetcode-cn.com/problems/combination-sum/
-
-【40】组合总和II: https://leetcode-cn.com/problems/combination-sum-ii/
-
-【216】组合总和III: https://leetcode-cn.com/problems/combination-sum-iii/
-
-【78】 子集：https://leetcode-cn.com/problems/subsets/
-
-【90】子集II: https://leetcode-cn.com/problems/subsets-ii/
-
-【401】二进制手表：https://leetcode-cn.com/problems/binary-watch/
-
-全排列：https://leetcode-cn.com/problems/permutations/
-
-全排列II：https://leetcode-cn.com/problems/permutations-ii/
-
-指令计算器设计：https://u.geekbang.org/playground/exam/823?question=7681
-
-赛程表问题：https://u.geekbang.org/playground/exam/823?question=7682
-
-
-
-## Graph
-
-手游上线：https://u.geekbang.org/playground/exam/823?question=8287
-
-
-
-## 回溯算法
-
-【17】电话号码的字母组合：https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/submissions/
-
-【93】复原IP地址：https://leetcode-cn.com/problems/restore-ip-addresses/
-
-【131】分割回文串：https://leetcode-cn.com/problems/palindrome-partitioning/
-
-【79】 单词搜索：https://leetcode-cn.com/problems/word-search/
-
-【200】岛屿数量：https://leetcode-cn.com/problems/number-of-islands/
-
-【130】被围绕的区域：https://leetcode-cn.com/problems/surrounded-regions/
-
-【417】太平洋大西洋水流问题：https://leetcode-cn.com/problems/pacific-atlantic-water-flow/
-
-【51】N皇后：https://leetcode-cn.com/problems/n-queens/
-
-【52】N皇后II：https://leetcode-cn.com/problems/n-queens-ii/
-
-【37】解数独：https://leetcode-cn.com/problems/sudoku-solver/
-
-【50】Pow(x,n )：https://leetcode-cn.com/problems/powx-n/
-
-【78】子集：https://leetcode-cn.com/problems/subsets/
-
-【169】多数元素：https://leetcode-cn.com/problems/majority-element/description/
-
-
-
-## 深度优先&广度优先
-
-【102】二叉树的层序遍历：https://leetcode-cn.com/problems/binary-tree-level-order-traversal/#/description
-
-【433】最小基因变化：https://leetcode-cn.com/problems/minimum-genetic-mutation/#/description
-
-【22】括号生成：https://leetcode-cn.com/problems/generate-parentheses/#/description
-
-【515】在每个树行中找最大值：https://leetcode-cn.com/problems/find-largest-value-in-each-tree-row/#/description
-
-【127】单词接龙：https://leetcode-cn.com/problems/word-ladder/description/
-
-【126】单词接龙II：https://leetcode-cn.com/problems/word-ladder-ii/description/
-
-【529】扫雷游戏：https://leetcode-cn.com/problems/minesweeper/description/
-
-
-
-## 贪心算法
-
-【860】柠檬水找零：https://leetcode-cn.com/problems/lemonade-change/description/
-
-【122】买卖股票最佳时机II：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/description/
-
-【455】分发饼干：https://leetcode-cn.com/problems/assign-cookies/description/
-
-【874】模拟行走机器人：https://leetcode-cn.com/problems/walking-robot-simulation/description/
-
-【55】跳跃游戏：https://leetcode-cn.com/problems/jump-game/
-
-【45】跳跃游戏II：https://leetcode-cn.com/problems/jump-game-ii/
-
-
-
-## 二分查找
-
-【69】X的平方根：https://leetcode-cn.com/problems/sqrtx/
-
-【367】有效的完全平方数：https://leetcode-cn.com/problems/valid-perfect-square/
-
-【33】搜索旋转排序数组：https://leetcode-cn.com/problems/search-in-rotated-sorted-array/
-
-【74】搜索二维矩阵：https://leetcode-cn.com/problems/search-a-2d-matrix/
-
-【153】寻找旋转排序数组中的最小值：https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/
-
-
-
-## 动态规划
-
-【70】爬楼梯：https://leetcode-cn.com/problems/climbing-stairs/
-
-【120】三角形最小路径：https://leetcode-cn.com/problems/triangle/
-
-【64】最小路径和：https://leetcode-cn.com/problems/minimum-path-sum/
-
-【343】整数拆分：https://leetcode-cn.com/problems/integer-break/
-
-【279】完全平方数：https://leetcode-cn.com/problems/perfect-squares/
-
-【91】解码方法：https://leetcode-cn.com/problems/decode-ways/
-
-【62】不同路径：https://leetcode-cn.com/problems/unique-paths/
-
-【63】不同路径II：https://leetcode-cn.com/problems/unique-paths-ii/
-
-【198】打家劫舍：https://leetcode-cn.com/problems/house-robber/
-
-【213】打家劫舍II：https://leetcode-cn.com/problems/house-robber-ii/
-
-【337】打家劫舍III：https://leetcode-cn.com/problems/house-robber-iii/
-
-【309】最佳买卖股票时机含冷冻期：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
-
-【416】分割等和子集：https://leetcode-cn.com/problems/partition-equal-subset-sum/
-
-【322】零钱兑换：https://leetcode-cn.com/problems/coin-change/
-
-【377】组合总和4：https://leetcode-cn.com/problems/combination-sum-iv/
-
-【474】壹和零：https://leetcode-cn.com/problems/ones-and-zeroes/
-
-【139】单词拆分：https://leetcode-cn.com/problems/word-break/
-
-【494】目标和：https://leetcode-cn.com/problems/target-sum/
-
-【300】最长递增子序列：https://leetcode-cn.com/problems/longest-increasing-subsequence/
-
-【376】摆动序列：https://leetcode-cn.com/problems/wiggle-subsequence/
-
-
-
-其它动态规划问题：
-
-最长公共子序列（Longest Common Sequence(LCS) ）
-
-
-
-贪心算法
-
-【455】分发饼干：https://leetcode-cn.com/problems/assign-cookies/
-
-【392】判断子序列：https://leetcode-cn.com/problems/is-subsequence/
-
-【435】无重叠区间：https://leetcode-cn.com/problems/non-overlapping-intervals/
+ 
+#### 对红黑树的总结
+排序二叉树固然查询很高效，但它有不平衡的问题，可能左子树很长右子树却很短，造成查询时性能不佳（logn退化成n），完全平衡的二叉树能保证层数平均，从而查询效率高，但是维护又很麻烦，每次插入和删除有很大的可能要大幅调整树结构。红黑树就是介于完全不平衡和完全平衡之间的一种二叉树，通过每个节点有红黑两种颜色、从节点到任意叶子节点会经过相同数量的黑色节点等一系列规则，实现了【树的层数最大也只会有两倍的差距】，这样既能提高插入和删除的效率，又能让树相对平衡从而有还不错的查询效率。从整体上讲，红黑树就是一种中庸之道的二叉树。
